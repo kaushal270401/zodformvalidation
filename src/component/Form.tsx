@@ -1,84 +1,69 @@
 import {
-  FormControl,
-  Select,
-  Input,
-  FormLabel,
   Heading,
   Container,
   Button,
+  Flex,
+  Grid,
 } from "@chakra-ui/react";
-import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { DataSchema, formtemplate } from "./SignUpform";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import "./Form.css";
+import { useContext } from "react";
+import Inputfeild from "./Inputfeild";
+import Selectfeild from "./Selectfeild";
+import Radiofeild from "./Radiofeild";
+import { FormContext } from "./context";
 
-type schema = z.infer<typeof DataSchema>;
+const Form: React.FC<{template:any ,onSubmited:any}> = ({ template, onSubmited }) => {
+
+  const userContext =useContext(FormContext)
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    onSubmited(userContext?.data);
+  };
 
 
-
-// Reusable Form Component
-const Form: React.FC<{ template: formtemplate; onSubmit:any}> = ({ template,onSubmit}) => {
-
-  let {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<schema>({
-    resolver: zodResolver(DataSchema),
-  });
-
-  let { title, fields } = template;
+  let { title, fields, section_title } = template;
 
   const renderFields = (fields: any) => {
     return fields.map((fields: any) => {
-      const { title, type, names } = fields;
+      const { input_type } = fields;
 
-      switch (type) {
-        case "text":
-          return (
-            <FormControl key={names}>
-              <FormLabel htmlFor={names}>{title}</FormLabel>
-              <Input type={type} id={names} {...register(names)} />
-              <p>{names==='firstname' && errors.firstname?.message}</p>
-              <p>{names==='lastname' && errors.lastname?.message}</p>
+      switch (input_type) {
+        case "input_feild":
+          return <Inputfeild {...fields}  onclick={userContext?.onChange}  errormessage={fields.errormessage} />;
 
-            </FormControl>
-          );
-        case "email":
-          return (
-            <FormControl key={names}>
-              <FormLabel htmlFor={names}>{title}</FormLabel>
-              <Input type={type} id={names} {...register(names)} />
-              <p>{errors.email?.message}</p>
-            </FormControl>
-          );
-        case "select":
-          return (
-            <FormControl key={names}>
-              <FormLabel htmlFor={names}>{title}</FormLabel>
-              <Select {...register(names)} name={names} id={names}>
-                {fields.option.map((opt: any) => {
-                  return <option>{opt.names}</option>;
-                })}
-              </Select>
-                <p>{errors.select?.message}</p>
-            </FormControl>
-          );
+        case "select_feild":
+          return <Selectfeild {...fields} onclick={userContext?.onChange} />;
+
+        case "radio_feild":
+          return <Radiofeild {...fields} onclick={userContext?.onChange} />;
       }
     });
   };
 
   return (
-    <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Heading mb={4}>{title}</Heading>
-        {renderFields(fields)}
-        <Button mt={5} type="submit" colorScheme="blackAlpha" className="btn">
-          Submit
-        </Button>
-      </form>
-    </Container>
+    <Flex alignItems="center" justifyContent="center">
+      <Container size="lg" variant="colorful">
+        <form onSubmit={handleSubmit}>
+          <Heading as="h1" size="3xl" mb={10}>
+            {title}
+          </Heading>
+          <Heading size={{ base: "md", md: "xl" }} mb={5} as="h6">
+            {section_title}
+          </Heading>
+          <Grid
+            templateColumns={{ base: "repeat(1,1fr)", md: "repeat(2,2fr)" }}
+            gap={6}
+            mb={5}
+          >
+            {renderFields(fields)}
+          </Grid>
+          <Button variant='outline' type="submit">
+            Submit
+          </Button>
+        </form>
+      </Container>
+    </Flex>
   );
 };
 

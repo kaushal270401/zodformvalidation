@@ -1,10 +1,15 @@
-import React from 'react';
-import SignUpForm from './component/SignUpform';
+import DataFeild from "./component/DataFeild";
+import SignUpForm from "./component/SignUpform";
+import ThemeSelector from "./Themeselector";
 
 function App() {
   return (
     <div className="App">
-        <SignUpForm/>
+      <>
+          <ThemeSelector />
+          <SignUpForm />
+          <DataFeild/>
+      </>
     </div>
   );
 }
