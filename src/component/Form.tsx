@@ -1,10 +1,4 @@
-import {
-  Heading,
-  Container,
-  Button,
-  Flex,
-  Grid,
-} from "@chakra-ui/react";
+import { Heading, Container, Button, Flex, Grid } from "@chakra-ui/react";
 import "./Form.css";
 import { useContext } from "react";
 import Inputfeild from "./Inputfeild";
@@ -12,15 +6,16 @@ import Selectfeild from "./Selectfeild";
 import Radiofeild from "./Radiofeild";
 import { FormContext } from "./context";
 
-const Form: React.FC<{template:any ,onSubmited:any}> = ({ template, onSubmited }) => {
-
-  const userContext =useContext(FormContext)
+const Form: React.FC<{ template: any; onSubmited: any }> = ({
+  template,
+  onSubmited,
+}) => {
+  const userContext = useContext(FormContext);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     onSubmited(userContext?.data);
   };
-
 
   let { title, fields, section_title } = template;
 
@@ -30,7 +25,7 @@ const Form: React.FC<{template:any ,onSubmited:any}> = ({ template, onSubmited }
 
       switch (input_type) {
         case "input_feild":
-          return <Inputfeild {...fields}  onclick={userContext?.onChange}  errormessage={fields.errormessage} />;
+          return <Inputfeild {...fields} onclick={userContext?.onChange} />;
 
         case "select_feild":
           return <Selectfeild {...fields} onclick={userContext?.onChange} />;
@@ -58,7 +53,7 @@ const Form: React.FC<{template:any ,onSubmited:any}> = ({ template, onSubmited }
           >
             {renderFields(fields)}
           </Grid>
-          <Button variant='outline' type="submit">
+          <Button variant="outline" type="submit">
             Submit
           </Button>
         </form>

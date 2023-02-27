@@ -3,7 +3,6 @@ import { template, user, FormContextType } from "../data/data";
 import Users from "../data/userData.json";
 
 import { nanoid } from "nanoid";
-import { log } from "console";
 
 export type userContextProviderProp = {
   children: React.ReactNode;
@@ -12,85 +11,124 @@ export type userContextProviderProp = {
 export const FormContext = React.createContext<FormContextType | null>(null);
 
 export const FormPageContext = ({ children }: userContextProviderProp) => {
+  const Template = template;
   const [person, setperson] = useState(Users);
 
-  const Template = template;
   const [data, setdata] = useState({
-    firstName: "",
-    Date: "",
-    email: "",
-    Number: 0,
-    Country: "",
-    Gender: "",
+    firstName: {
+      value: "",
+      errorMessage: "",
+      rules: [
+        {
+          name: "max",
+          value: 6,
+        },
+        {
+          name: "min",
+          value: 1,
+        },
+      ],
+    },
+    Date: {
+      value: "",
+      errorMessage: "",
+      rules: [
+        {
+          name: "required",
+          value: true,
+        },
+      ],
+    },
+    email: {
+      value: "",
+      errorMessage: "",
+      rules: [
+        {
+          name: "required",
+          value: true,
+        },
+      ],
+    },
+    Number: {
+      value: "",
+      errorMessage: "",
+      rules: [
+        {
+          name: "max",
+          value: 6,
+        },
+        {
+          name: "min",
+          value: 1,
+        },
+      ],
+    },
+    Gender: {
+      value: "",
+      erroMessage: "",
+      rules: [
+        {
+          name: "required",
+          value: true,
+        },
+      ],
+    },
   });
 
-  const onChange = (
-    rules: {name: string, value: number | boolean}[],
-    event: any
-  ) => {
-    // ValidateFeild(rules, event.target.value);
-    let value=event.target.value
+  const onChange = (names: any, event: any) => {
+    let value = event.target.value;
+    // let rules =...data[names].rules
+
+    let rules = data[names].rules;
+    // console.log(data[names].rules);
     setdata({
       ...data,
-      [event.target.name]: {
-        errorMessage: ValidateFeild(rules,value),
+      // [event.target.name]: event.target.value,
+      [names]: {
+        ...data[names],
+        value: event.target.value,
+        errorMessage: ValidateFeild(rules, value),
       },
     });
   };
 
+  const ValidateFeild = (
+    rules: { name: string; value: number | boolean }[],
+    value: any
+  ) => {
+    let errorMessage = "";
+    rules.some((rule: any) => {
+      switch (rule.name) {
+        case "max":
+          if (value?.length > rule.value) {
+            errorMessage = `Max value should be less then ${rule.value}`;
+            return true;
+          }
+          break;
+          
+        case "min":
+          if (value?.length < rule.value) {
+            errorMessage = `Min value should be more then ${rule.value}`;
+            return true;
+          }
+          break;
 
+        case "required":
+          if (rule.value && !value) {
+            errorMessage = `This feild is required`;
+            return true;
+          }
+          break;
 
-
-  const ValidateFeild = (rules:{name:string,value:number|boolean}[], value: any) => {
-
-
-    rules.map(rule=>{
-      console.log(rule.name)
-    })
-
-
-    console.log(rules)
-    // rules.map(rule=>{
-    //   console.log('work')
-    // })
-    console.log(rules.name)
-    
-    // let errorMessage =rules.forEach((rule:any) => {
-    //   switch (rule.name) {
-    //     case "max":
-    //       if (value?.length > rule.value) {
-    //         errorMessage= `Max value should be less then ${rule.value}`;
-    //       }
-  
-    //       break;
-    //     case "min":
-    //       if (value?.length < rule.value) {
-    //         errorMessage= `Min value should be more then ${rule.value}`;
-    //       }
-  
-    //       break;
-    //     case "required":
-    //       if (rule.value && !value) {
-    //           errorMessage= `This feild is required`;
-    //       }
-  
-    //       break;
-  
-    //     default:
-    //       break;
-  
-    //     return false
-    //   }
-    //   return errorMessage
-    // });
-    console.log(rules)
+        default:
+          break;
+          return false;
+      }
+      return errorMessage;
+    });
   };
 
-
   const onSubmited = (values: user) => {
-    console.log("Submit Data");
-    // console.log(values);
-
     const UserInfo = {
       id: nanoid(),
       firstName: values.firstName,
@@ -100,9 +138,7 @@ export const FormPageContext = ({ children }: userContextProviderProp) => {
       Country: values.Country,
       Gender: values.Gender,
     };
-    // console.log(UserInfo.Date)
     const userDataInfo: any = [...person, UserInfo];
-
     setperson(() => userDataInfo);
   };
 
@@ -115,7 +151,6 @@ export const FormPageContext = ({ children }: userContextProviderProp) => {
         setdata,
         person,
         onChange,
-        ValidateFeild,
       }}
     >
       {children}

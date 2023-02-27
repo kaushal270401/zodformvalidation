@@ -14,14 +14,14 @@ const DataFeild = () => {
             <Tr>
                 {userContext?.Template.fields.map((feild:any)=>{
                     return(
-                        <Th>{feild.names}</Th>
+                        <Th key={feild.names}>{feild.names}</Th>
                     )
                 })}
             </Tr>
         </Thead>
         <Tbody>
-            {userContext?.person.map((person:any)=>(
-                <Tr key={person.id}>
+            {userContext?.person.map((person:any , index:any)=>(
+                <Tr key={index}>
                     <Td>{person.firstName}</Td>
                     <Td>{person.Date}</Td>
                     <Td>{person.email}</Td>
@@ -30,8 +30,7 @@ const DataFeild = () => {
                     <Td>{person.Gender}</Td>
                 </Tr>
             ))}
-            <Tr>
-            </Tr>
+         
         </Tbody>
       </Table>
     </TableContainer>

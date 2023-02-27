@@ -1,3 +1,5 @@
+import { number } from "zod";
+
 export interface user {
   id?: string;
   firstName: string;
@@ -10,17 +12,17 @@ export interface user {
 export type FormContextType = {
   Template: formtemplate;
   onSubmited: (value: user) => void;
-  data: user;
-  setdata: React.Dispatch<React.SetStateAction<user>>;
+  data: any;
+  setdata: React.Dispatch<React.SetStateAction<any>>;
   person: any;
-  ValidateFeild:any
-  onChange:any
+  onChange: any;
 };
 
 export interface formtemplate {
   title: string;
   section_title: string;
   fields: {
+    id: number;
     input_type: string;
     title: string;
     type: string;
@@ -44,11 +46,13 @@ export const template: formtemplate = {
   section_title: "Please fill the form",
   fields: [
     {
+      id: 1,
       input_type: "input_feild",
       title: "First Name",
       type: "text",
       names: "firstName",
       placeholder: "Enter a Name",
+      errorMessage: "data.firstName.errorMessage",
       rules: [
         {
           name: "max",
@@ -59,32 +63,16 @@ export const template: formtemplate = {
           value: 1,
         },
       ],
- 
     },
     {
+      id: 2,
+
       input_type: "input_feild",
       title: "Date",
       type: "date",
       names: "Date",
       required: true,
-
-      errorMessage: "",
-      rules: [
-        {
-          name: "required",
-          value: true
-        },
-   
-      ],
-    },
-    {
-      input_type: "input_feild",
-      title: "Email",
-      type: "email",
-      names: "email",
-      placeholder: "Email",
-
-      errorMessage: "",
+      errorMessage: "data.Date.errorMessage",
       rules: [
         {
           name: "required",
@@ -93,12 +81,30 @@ export const template: formtemplate = {
       ],
     },
     {
+      id: 3,
+
+      input_type: "input_feild",
+      title: "Email",
+      type: "email",
+      names: "email",
+      placeholder: "Email",
+      errorMessage: 'data.email.errorMessage',
+      rules: [
+        {
+          name: "required",
+          value: true,
+        },
+      ],
+    },
+    {
+      id: 4,
+
       input_type: "input_feild",
       title: "Number",
       type: "number",
       names: "Number",
       placeholder: "Enter Number",
-      errorMessage: "",
+      errorMessage: 'data.Number.errorMessage',
 
       rules: [
         {
@@ -112,10 +118,13 @@ export const template: formtemplate = {
       ],
     },
     {
+      id: 5,
+
       input_type: "select_feild",
       type: "select",
       title: "Select the country",
       names: "Country",
+      errorMessage:'data.Country.errorMEssage',
       placeholder: "select a country",
       option: [
         {
@@ -148,10 +157,13 @@ export const template: formtemplate = {
       ],
     },
     {
+      id: 6,
+
       input_type: "radio_feild",
       type: "option",
       title: "Gender",
       names: "Gender",
+      errorMessage:'data.Gender.errorMEssage',
       option: [
         {
           names: "Male",
@@ -162,7 +174,6 @@ export const template: formtemplate = {
           type: "option",
         },
       ],
-      errorMessage: "",
       rules: [
         {
           name: "required",
@@ -172,4 +183,3 @@ export const template: formtemplate = {
     },
   ],
 };
-

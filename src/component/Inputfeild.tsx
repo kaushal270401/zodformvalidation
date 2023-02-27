@@ -3,18 +3,20 @@ import { useContext } from "react";
 import { FormContext } from "./context";
 
 const Inputfeild = (props: any) => {
-  const { type, names, placeholder, required,rules, title, onclick} = props;
+  const { type, names, placeholder,id, title, onclick,errorMessage} = props;
   const userContext= useContext(FormContext)
   return (
-    <FormControl key={names} >
-      <FormLabel htmlFor={names}>{title}</FormLabel>
+    <FormControl key={id} >
+      <FormLabel  htmlFor={names}>{title}</FormLabel>
       <Input
         type={type}
         name={names}
-        // key={names}
         placeholder={placeholder}
-        onChange={(e)=>onclick({rules},e)}
+        onChange={(e)=>onclick(names,e)}
       />
+      {/* console.log(errorMessage); */}
+      {errorMessage && <p>{errorMessage}</p>}
+      
     </FormControl>
   );
 };
