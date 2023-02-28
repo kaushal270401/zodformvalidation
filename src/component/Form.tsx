@@ -14,24 +14,25 @@ const Form: React.FC<{ template: any; onSubmited: any }> = ({
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    onSubmited(userContext?.data);
+    {!userContext?.isvalid  &&onSubmited(userContext?.data);}
   };
 
   let { title, fields, section_title } = template;
 
   const renderFields = (fields: any) => {
     return fields.map((fields: any) => {
-      const { input_type } = fields;
+
+      const { input_type,names } = fields;
 
       switch (input_type) {
         case "input_feild":
-          return <Inputfeild {...fields} onclick={userContext?.onChange} />;
+          return <Inputfeild {...fields} errorMessage={userContext?.data[names].errorMessage} onclick={userContext?.onChange} />;
 
         case "select_feild":
-          return <Selectfeild {...fields} onclick={userContext?.onChange} />;
+          return <Selectfeild {...fields} errorMessage={userContext?.data[names].errorMessage}  onclick={userContext?.onChange} />;
 
         case "radio_feild":
-          return <Radiofeild {...fields} onclick={userContext?.onChange} />;
+          return <Radiofeild {...fields} errorMessage={userContext?.data[names].errorMessage} onclick={userContext?.onChange} />;
       }
     });
   };

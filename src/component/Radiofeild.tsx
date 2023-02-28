@@ -1,4 +1,4 @@
-import {  FormControl,FormLabel ,Radio,RadioGroup,} from "@chakra-ui/react";
+import {  FormControl,FormErrorMessage,FormLabel ,Radio,RadioGroup,} from "@chakra-ui/react";
 
 
 const Radiofeild=(props:any)=>{
@@ -7,7 +7,8 @@ const Radiofeild=(props:any)=>{
         required,
         title,
         onclick,
-        rules
+        rules,
+        errorMessage
       } = props;
     return(
         <FormControl key={names}>
@@ -17,17 +18,17 @@ const Radiofeild=(props:any)=>{
             return (
               <Radio
                 name={names}
-                onChange={(e)=>onclick({rules},e)}                
+                onChange={(e)=>onclick(rules,e)}                
                 key={opt.names}
                 pr={3}
                 value={opt.names}
-                required={required}
               >
                 {opt.names}
               </Radio>
             );
           })}
         </RadioGroup>
+        <p>{errorMessage}</p>
       </FormControl>
     )
 }

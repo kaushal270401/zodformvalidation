@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { template, user, FormContextType } from "../data/data";
 import Users from "../data/userData.json";
-
 import { nanoid } from "nanoid";
 
 export type userContextProviderProp = {
@@ -13,77 +12,39 @@ export const FormContext = React.createContext<FormContextType | null>(null);
 export const FormPageContext = ({ children }: userContextProviderProp) => {
   const Template = template;
   const [person, setperson] = useState(Users);
-
+  const [isvalid, setIsvalid] = useState(true);
   const [data, setdata] = useState({
     firstName: {
       value: "",
       errorMessage: "",
-      rules: [
-        {
-          name: "max",
-          value: 6,
-        },
-        {
-          name: "min",
-          value: 1,
-        },
-      ],
     },
     Date: {
       value: "",
       errorMessage: "",
-      rules: [
-        {
-          name: "required",
-          value: true,
-        },
-      ],
     },
     email: {
       value: "",
       errorMessage: "",
-      rules: [
-        {
-          name: "required",
-          value: true,
-        },
-      ],
     },
     Number: {
       value: "",
       errorMessage: "",
-      rules: [
-        {
-          name: "max",
-          value: 6,
-        },
-        {
-          name: "min",
-          value: 1,
-        },
-      ],
+    },
+    Country: {
+      value: "",
+      erroMessage: "",
     },
     Gender: {
       value: "",
       erroMessage: "",
-      rules: [
-        {
-          name: "required",
-          value: true,
-        },
-      ],
     },
   });
 
-  const onChange = (names: any, event: any) => {
+  const onChange = (rules: {name:string,value:any}[], event: any) => {
     let value = event.target.value;
-    // let rules =...data[names].rules
-
-    let rules = data[names].rules;
-    // console.log(data[names].rules);
+    let names = event.target.name;
     setdata({
       ...data,
-      // [event.target.name]: event.target.value,
       [names]: {
         ...data[names],
         value: event.target.value,
@@ -99,23 +60,24 @@ export const FormPageContext = ({ children }: userContextProviderProp) => {
     let errorMessage = "";
     rules.some((rule: any) => {
       switch (rule.name) {
-        case "max":
-          if (value?.length > rule.value) {
-            errorMessage = `Max value should be less then ${rule.value}`;
-            return true;
-          }
-          break;
-          
-        case "min":
-          if (value?.length < rule.value) {
-            errorMessage = `Min value should be more then ${rule.value}`;
+        case "required":
+          if (rule.value && !value) {
+            errorMessage = `This feild is required`;
             return true;
           }
           break;
 
-        case "required":
-          if (rule.value && !value) {
-            errorMessage = `This feild is required`;
+        case "max":
+          if (value?.length > rule.value) {
+            errorMessage = `Max value should be less then ${rule.value}`;
+            console.log(errorMessage);
+            return true;
+          }
+          break;
+
+        case "min":
+          if (value?.length < rule.value) {
+            errorMessage = `Min value should be more then ${rule.value}`;
             return true;
           }
           break;
@@ -124,20 +86,35 @@ export const FormPageContext = ({ children }: userContextProviderProp) => {
           break;
           return false;
       }
-      return errorMessage;
     });
+    {
+      errorMessage ? setIsvalid(true) : setIsvalid(false);
+    }
+    return errorMessage;
   };
 
-  const onSubmited = (values: user) => {
+  const onSubmited = (values: any) => {
+    // ValidateFeild(rules, values)
     const UserInfo = {
       id: nanoid(),
-      firstName: values.firstName,
-      Date: values.Date,
-      email: values.email,
-      Number: values.Number,
-      Country: values.Country,
-      Gender: values.Gender,
+      firstName: values.firstName.value,
+      Date: values.Date.value,
+      email: values.email.value,
+      Number: values.Number.value,
+      Country: values.Country.value,
+      Gender: values.Gender.value,
     };
+
+    if (
+      UserInfo.firstName === "" ||
+      UserInfo.Date === "" ||
+      UserInfo.Gender === "" ||
+      UserInfo.email === "" ||
+      UserInfo.Country === ""
+    ) {
+      return;
+    }
+
     const userDataInfo: any = [...person, UserInfo];
     setperson(() => userDataInfo);
   };
@@ -151,6 +128,8 @@ export const FormPageContext = ({ children }: userContextProviderProp) => {
         setdata,
         person,
         onChange,
+        isvalid,
+        ValidateFeild,
       }}
     >
       {children}
